@@ -1,0 +1,13 @@
+{
+  "name": "app-planets",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "parcel index.html"
+  },
+  "author": "Andres",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel": "^2.16.1"
+  }
+}
