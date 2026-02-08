@@ -732,7 +732,7 @@ const init = function() {
 };
 init();
 
-},{"./model.js":"3QBkH","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./view/searchView.js":"joADT","./view/planetView.js":"8GiMX"}],"3QBkH":[function(require,module,exports,__globalThis) {
+},{"./model.js":"3QBkH","./view/searchView.js":"joADT","./view/planetView.js":"8GiMX","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"3QBkH":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "state", ()=>state);
@@ -850,7 +850,77 @@ function normalizeExoplanet(exo) {
     };
 }
 
-},{"./model/planetsModel.js":"cgtgU","./model/exoplanetNameMap.js":"4HgPr","./model/exoplanetsModel.js":"hsBNA","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./helpers/helpers.js":"lhTXt","./model/unitConversions.js":"iTaCT"}],"cgtgU":[function(require,module,exports,__globalThis) {
+},{"./helpers/helpers.js":"lhTXt","./model/planetsModel.js":"cgtgU","./model/exoplanetNameMap.js":"4HgPr","./model/exoplanetsModel.js":"hsBNA","./model/unitConversions.js":"iTaCT","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"lhTXt":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "isSolarSystemPlanet", ()=>isSolarSystemPlanet);
+parcelHelpers.export(exports, "getJSON", ()=>getJSON);
+var _configJs = require("../config.js");
+function isSolarSystemPlanet(name) {
+    if (typeof name !== 'string') return false;
+    const normalized = name.trim().toLowerCase();
+    if (!normalized) return false;
+    return (0, _configJs.SOLAR_SYSTEM_PLANETS).includes(normalized);
+}
+const getJSON = async function(url) {
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (!response.ok) throw new Error(`${data.message} ${response.status}`);
+        return data;
+    } catch (err) {
+        throw err;
+    }
+};
+
+},{"../config.js":"2hPh4","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2hPh4":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "SOLAR_SYSTEM_PLANETS", ()=>SOLAR_SYSTEM_PLANETS);
+parcelHelpers.export(exports, "EXOPLANET_API_URL", ()=>EXOPLANET_API_URL);
+const SOLAR_SYSTEM_PLANETS = [
+    'mercury',
+    'venus',
+    'earth',
+    'mars',
+    'jupiter',
+    'saturn',
+    'uranus',
+    'neptune'
+];
+const EXOPLANET_API_URL = 'https://corsproxy.io/?https://exo.mast.stsci.edu/api/v0.1/exoplanets';
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"jnFvT":[function(require,module,exports,__globalThis) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"cgtgU":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "planets", ()=>planets);
@@ -1034,37 +1104,7 @@ const planets = [
     }
 ];
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","2d881e86a4658452":"gKH0a","d1ab1e08d4c20726":"20CbQ","b4bf504e53e450c2":"3I10e","a390c1b949737837":"iqD2l","1039be4bfa5023e2":"cDuqw","69f8a9cd457e6cf8":"4I2d5","a228d5fc37634d70":"1TyVm","232bfc9a0175f988":"2k4gv"}],"jnFvT":[function(require,module,exports,__globalThis) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"gKH0a":[function(require,module,exports,__globalThis) {
+},{"2d881e86a4658452":"gKH0a","d1ab1e08d4c20726":"20CbQ","b4bf504e53e450c2":"3I10e","a390c1b949737837":"iqD2l","1039be4bfa5023e2":"cDuqw","69f8a9cd457e6cf8":"4I2d5","a228d5fc37634d70":"1TyVm","232bfc9a0175f988":"2k4gv","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"gKH0a":[function(require,module,exports,__globalThis) {
 module.exports = module.bundle.resolve("mercury.8c16d690.jpg") + "?" + Date.now();
 
 },{}],"20CbQ":[function(require,module,exports,__globalThis) {
@@ -1124,7 +1164,7 @@ const EXOPLANET_IMAGES = {
     ]
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","c84a77762a24a04d":"5IgIM","30a7c35690ff91fc":"2CzGE","16fa780567c9541c":"cyiMZ","e6c36cc55cdf7682":"5a97i","d59d2dc34d3e2c8c":"6i3Dk","486b21f58bd8d57f":"iLk9R","c720d1c35382c6f1":"avi3u","8c8739349aa94635":"8nVoy"}],"5IgIM":[function(require,module,exports,__globalThis) {
+},{"c84a77762a24a04d":"5IgIM","30a7c35690ff91fc":"2CzGE","16fa780567c9541c":"cyiMZ","e6c36cc55cdf7682":"5a97i","d59d2dc34d3e2c8c":"6i3Dk","486b21f58bd8d57f":"iLk9R","c720d1c35382c6f1":"avi3u","8c8739349aa94635":"8nVoy","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"5IgIM":[function(require,module,exports,__globalThis) {
 module.exports = module.bundle.resolve("gasgiant_1.67f3ac2c.jpg") + "?" + Date.now();
 
 },{}],"2CzGE":[function(require,module,exports,__globalThis) {
@@ -1148,47 +1188,7 @@ module.exports = module.bundle.resolve("rocky_1.20497301.jpg") + "?" + Date.now(
 },{}],"8nVoy":[function(require,module,exports,__globalThis) {
 module.exports = module.bundle.resolve("rocky_2.40e7d98b.jpg") + "?" + Date.now();
 
-},{}],"lhTXt":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "isSolarSystemPlanet", ()=>isSolarSystemPlanet);
-parcelHelpers.export(exports, "getJSON", ()=>getJSON);
-var _configJs = require("../config.js");
-function isSolarSystemPlanet(name) {
-    if (typeof name !== 'string') return false;
-    const normalized = name.trim().toLowerCase();
-    if (!normalized) return false;
-    return (0, _configJs.SOLAR_SYSTEM_PLANETS).includes(normalized);
-}
-const getJSON = async function(url) {
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        if (!response.ok) throw new Error(`${data.message} ${response.status}`);
-        return data;
-    } catch (err) {
-        throw err;
-    }
-};
-
-},{"../config.js":"2hPh4","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"2hPh4":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "SOLAR_SYSTEM_PLANETS", ()=>SOLAR_SYSTEM_PLANETS);
-parcelHelpers.export(exports, "EXOPLANET_API_URL", ()=>EXOPLANET_API_URL);
-const SOLAR_SYSTEM_PLANETS = [
-    'mercury',
-    'venus',
-    'earth',
-    'mars',
-    'jupiter',
-    'saturn',
-    'uranus',
-    'neptune'
-];
-const EXOPLANET_API_URL = 'https://corsproxy.io/?https://exo.mast.stsci.edu/api/v0.1/exoplanets';
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"iTaCT":[function(require,module,exports,__globalThis) {
+},{}],"iTaCT":[function(require,module,exports,__globalThis) {
 // model/unitConversions.js
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -1282,7 +1282,7 @@ class PlanetView {
 }
 exports.default = new PlanetView();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","../model/categoryLabels.js":"8FeZ1"}],"8FeZ1":[function(require,module,exports,__globalThis) {
+},{"../model/categoryLabels.js":"8FeZ1","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"8FeZ1":[function(require,module,exports,__globalThis) {
 // model/categoryLabels.js
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
