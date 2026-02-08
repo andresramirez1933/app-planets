@@ -2,6 +2,7 @@ import { isSolarSystemPlanet } from './helpers/helpers.js';
 import { planets } from './model/planetsModel.js';
 import { EXOPLANET_NAME_FIX } from './model/exoplanetNameMap.js';
 import { EXOPLANET_IMAGES } from './model/exoplanetsModel.js';
+import { JUPITER_TO_EARTH } from './model/unitConversions.js';
 
 export const state = {
   planet: {},
@@ -12,24 +13,29 @@ export const state = {
 
 export const loadPlanet = async function (planet) {
   try {
+    console.log(planet);
     if (isSolarSystemPlanet(planet)) {
-      state.planet = getPlanetInfo(planet);
-      console.log(state.planet);
+      const solarPlanet = getPlanetInfo(planet);
+
+      if (!solarPlanet) {
+        state.planet = undefined;
+        return;
+      }
+
+      state.planet = normalizeSolarPlanet(solarPlanet);
       return;
     }
-
     const exoplanet = await loadExoplanet(planet);
 
     if (!exoplanet) {
       state.planet = undefined;
       return;
     }
-
     exoplanet.category = classifyExoplanet(exoplanet);
+    exoplanet.image = getExoplanetImage(exoplanet.category);
 
-    exoplanet.image = getExoplanetImage(classifyExoplanet(exoplanet));
-
-    state.planet = exoplanet;
+    state.planet = normalizeExoplanet(exoplanet);
+    console.log(state.planet);
   } catch (err) {
     console.error(err);
     state.planet = undefined;
@@ -43,6 +49,7 @@ function getPlanetInfo(name) {
     }
   } catch (err) {
     console.error(err);
+    state.planet = undefined;
   }
 }
 
@@ -89,4 +96,48 @@ function getExoplanetImage(category) {
   const images = EXOPLANET_IMAGES[category] || EXOPLANET_IMAGES.unknown;
 
   return images[Math.floor(Math.random() * images.length)];
+}
+
+function normalizeSolarPlanet(planet) {
+  return {
+    ...planet,
+
+    Rp: planet.Rp * JUPITER_TO_EARTH.radius,
+    Mp: planet.Mp * JUPITER_TO_EARTH.mass,
+
+    units: {
+      Rp: 'R⊕',
+      Mp: 'M⊕',
+      orbital_distance: 'AU',
+      orbital_period: 'days',
+      Tp: 'K',
+      surface_gravity: 'm/s²',
+    },
+  };
+}
+
+function normalizeExoplanet(exo) {
+  console.log(exo);
+  console.log(JUPITER_TO_EARTH.radius);
+  return {
+    ...exo,
+
+    // Convert Jupiter → Earth
+    Rp: exo.Rp ? exo.Rp * JUPITER_TO_EARTH.radius : null,
+    Mp: exo.Mp ? exo.Mp * JUPITER_TO_EARTH.mass : null,
+
+    orbital_period: exo.orbital_period ?? null,
+    orbital_distance: exo.orbital_distance ?? null,
+    Tp: exo.Tp ?? null,
+    surface_gravity: exo.surface_gravity ?? null,
+
+    units: {
+      Rp: 'R⊕',
+      Mp: 'M⊕',
+      orbital_distance: 'AU',
+      orbital_period: 'days',
+      Tp: 'K',
+      surface_gravity: 'm/s²',
+    },
+  };
 }

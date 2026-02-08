@@ -741,6 +741,7 @@ var _helpersJs = require("./helpers/helpers.js");
 var _planetsModelJs = require("./model/planetsModel.js");
 var _exoplanetNameMapJs = require("./model/exoplanetNameMap.js");
 var _exoplanetsModelJs = require("./model/exoplanetsModel.js");
+var _unitConversionsJs = require("./model/unitConversions.js");
 const state = {
     planet: {},
     search: {
@@ -749,9 +750,14 @@ const state = {
 };
 const loadPlanet = async function(planet) {
     try {
+        console.log(planet);
         if ((0, _helpersJs.isSolarSystemPlanet)(planet)) {
-            state.planet = getPlanetInfo(planet);
-            console.log(state.planet);
+            const solarPlanet = getPlanetInfo(planet);
+            if (!solarPlanet) {
+                state.planet = undefined;
+                return;
+            }
+            state.planet = normalizeSolarPlanet(solarPlanet);
             return;
         }
         const exoplanet = await loadExoplanet(planet);
@@ -760,8 +766,9 @@ const loadPlanet = async function(planet) {
             return;
         }
         exoplanet.category = classifyExoplanet(exoplanet);
-        exoplanet.image = getExoplanetImage(classifyExoplanet(exoplanet));
-        state.planet = exoplanet;
+        exoplanet.image = getExoplanetImage(exoplanet.category);
+        state.planet = normalizeExoplanet(exoplanet);
+        console.log(state.planet);
     } catch (err) {
         console.error(err);
         state.planet = undefined;
@@ -772,6 +779,7 @@ function getPlanetInfo(name) {
         if ((0, _helpersJs.isSolarSystemPlanet)(name)) return findPlanet(name);
     } catch (err) {
         console.error(err);
+        state.planet = undefined;
     }
 }
 function findPlanet(name) {
@@ -804,8 +812,45 @@ function getExoplanetImage(category) {
     const images = (0, _exoplanetsModelJs.EXOPLANET_IMAGES)[category] || (0, _exoplanetsModelJs.EXOPLANET_IMAGES).unknown;
     return images[Math.floor(Math.random() * images.length)];
 }
+function normalizeSolarPlanet(planet) {
+    return {
+        ...planet,
+        Rp: planet.Rp * (0, _unitConversionsJs.JUPITER_TO_EARTH).radius,
+        Mp: planet.Mp * (0, _unitConversionsJs.JUPITER_TO_EARTH).mass,
+        units: {
+            Rp: "R\u2295",
+            Mp: "M\u2295",
+            orbital_distance: 'AU',
+            orbital_period: 'days',
+            Tp: 'K',
+            surface_gravity: "m/s\xb2"
+        }
+    };
+}
+function normalizeExoplanet(exo) {
+    console.log(exo);
+    console.log((0, _unitConversionsJs.JUPITER_TO_EARTH).radius);
+    return {
+        ...exo,
+        // Convert Jupiter → Earth
+        Rp: exo.Rp ? exo.Rp * (0, _unitConversionsJs.JUPITER_TO_EARTH).radius : null,
+        Mp: exo.Mp ? exo.Mp * (0, _unitConversionsJs.JUPITER_TO_EARTH).mass : null,
+        orbital_period: exo.orbital_period ?? null,
+        orbital_distance: exo.orbital_distance ?? null,
+        Tp: exo.Tp ?? null,
+        surface_gravity: exo.surface_gravity ?? null,
+        units: {
+            Rp: "R\u2295",
+            Mp: "M\u2295",
+            orbital_distance: 'AU',
+            orbital_period: 'days',
+            Tp: 'K',
+            surface_gravity: "m/s\xb2"
+        }
+    };
+}
 
-},{"./model/planetsModel.js":"cgtgU","./model/exoplanetNameMap.js":"4HgPr","./model/exoplanetsModel.js":"hsBNA","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./helpers/helpers.js":"lhTXt"}],"cgtgU":[function(require,module,exports,__globalThis) {
+},{"./model/planetsModel.js":"cgtgU","./model/exoplanetNameMap.js":"4HgPr","./model/exoplanetsModel.js":"hsBNA","@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT","./helpers/helpers.js":"lhTXt","./model/unitConversions.js":"iTaCT"}],"cgtgU":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "planets", ()=>planets);
@@ -1143,6 +1188,16 @@ const SOLAR_SYSTEM_PLANETS = [
 ];
 const EXOPLANET_API_URL = 'https://corsproxy.io/?https://exo.mast.stsci.edu/api/v0.1/exoplanets';
 
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"iTaCT":[function(require,module,exports,__globalThis) {
+// model/unitConversions.js
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "JUPITER_TO_EARTH", ()=>JUPITER_TO_EARTH);
+const JUPITER_TO_EARTH = {
+    radius: 11.209,
+    mass: 317.83
+};
+
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"joADT":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -1172,6 +1227,7 @@ class PlanetView {
     render(data) {
         if (!data || Array.isArray(data) && data.length === 0) return this.renderError();
         this._data = data;
+        console.log(this._data);
         const markup = this._generateMarkup();
         this._clear();
         this._parentElement.insertAdjacentHTML('afterbegin', markup);
@@ -1185,14 +1241,18 @@ class PlanetView {
   <p><span class="label">System:</span> <span class="value">${this._data.star_name}</span></p>
   <p><span class="label">Category:</span> <span class="value">${(0, _categoryLabelsJs.CATEGORY_LABELS)[this._data.category] ?? 'Unknown'}</span></p>
   <p><span class="label">Constellation:</span> <span class="value">${this._data.constellation}</span></p>
-  <p><span class="label">Radius:</span> <span class="value">${this._data.Rp}</span></p>
+  <p><span class="label">Radius:</span>
+  <span class="value">
+    ${this._data.Rp?.toFixed(2)} ${this._data.units.Rp}
+    </span>
+    </p>
 </div>
 
 <div class="col">
-  <p><span class="label">Mass:</span> <span class="value">${this._data.Mp}</span></p>
-  <p><span class="label">Temperature:</span> <span class="value">${this._data.Tp}</span></p>
+  <p><span class="label">Mass:</span> <span class="value">${this._data.Mp?.toFixed(2)} ${this._data.units.Mp}</span></p>
+  <p><span class="label">Temperature:</span> <span class="value">${this._data.Tp?.toFixed(0)} ${this._data.units?.Tp ?? ''} </span></p>
   <p><span class="label">Period:</span> <span class="value">${this._data.orbital_period} days</span></p>
-  <p><span class="label">Distance:</span> <span class="value">${this._data.orbital_distance}</span></p>
+  <p><span class="label">Distance:</span> <span class="value"> ${this._data.orbital_distance?.toFixed(2)} ${this._data.units?.orbital_distance ?? ''}</span></p>
   <p><span class="label">Gravity:</span> <span class="value">${Number(this._data.surface_gravity.toFixed(2))} m/s\xb2</span></p>
 </div>
       </div>

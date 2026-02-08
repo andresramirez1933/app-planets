@@ -9,6 +9,7 @@ class PlanetView {
       return this.renderError();
 
     this._data = data;
+    console.log(this._data);
     const markup = this._generateMarkup();
 
     this._clear();
@@ -33,23 +34,21 @@ class PlanetView {
   <p><span class="label">Constellation:</span> <span class="value">${
     this._data.constellation
   }</span></p>
-  <p><span class="label">Radius:</span> <span class="value">${
-    this._data.Rp
-  }</span></p>
+  <p><span class="label">Radius:</span>
+  <span class="value">
+    ${this._data.Rp?.toFixed(2)} ${this._data.units.Rp}
+    </span>
+    </p>
 </div>
 
 <div class="col">
-  <p><span class="label">Mass:</span> <span class="value">${
-    this._data.Mp
-  }</span></p>
-  <p><span class="label">Temperature:</span> <span class="value">${
-    this._data.Tp
-  }</span></p>
-  <p><span class="label">Period:</span> <span class="value">${
-    this._data.orbital_period
-  } days</span></p>
-  <p><span class="label">Distance:</span> <span class="value">${
-    this._data.orbital_distance
+  <p><span class="label">Mass:</span> <span class="value">${this._data.Mp?.toFixed(
+    2,
+  )} ${this._data.units.Mp}</span></p>
+  <p><span class="label">Temperature:</span> <span class="value">${this._data.Tp?.toFixed(0)} ${this._data.units?.Tp ?? ''} </span></p>
+  <p><span class="label">Period:</span> <span class="value">${this._data.orbital_period} days</span></p>
+  <p><span class="label">Distance:</span> <span class="value"> ${this._data.orbital_distance?.toFixed(2)} ${
+    this._data.units?.orbital_distance ?? ''
   }</span></p>
   <p><span class="label">Gravity:</span> <span class="value">${Number(
     this._data.surface_gravity.toFixed(2),

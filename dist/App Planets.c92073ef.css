@@ -30,10 +30,6 @@ body {
   flex: 0 0 40%;
 }
 
-.result {
-  flex: 0 0 60%;
-}
-
 .form-card {
   background-color: #083c8a;
   border-radius: 3rem;
