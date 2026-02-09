@@ -13,7 +13,6 @@ export const state = {
 
 export const loadPlanet = async function (planet) {
   try {
-    console.log(planet);
     if (isSolarSystemPlanet(planet)) {
       const solarPlanet = getPlanetInfo(planet);
 
@@ -35,7 +34,6 @@ export const loadPlanet = async function (planet) {
     exoplanet.image = getExoplanetImage(exoplanet.category);
 
     state.planet = normalizeExoplanet(exoplanet);
-    console.log(state.planet);
   } catch (err) {
     console.error(err);
     state.planet = undefined;
@@ -117,8 +115,6 @@ function normalizeSolarPlanet(planet) {
 }
 
 function normalizeExoplanet(exo) {
-  console.log(exo);
-  console.log(JUPITER_TO_EARTH.radius);
   return {
     ...exo,
 

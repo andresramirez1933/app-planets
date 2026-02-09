@@ -1,0 +1,42 @@
+/* Mobile devices */
+@media (max-width: 768px) {
+  html {
+    font-size: 56%;
+  }
+
+  .planet-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .form-card {
+    width: 90%;
+    max-width: 360px;
+  }
+
+  .planet-card {
+    width: 95%;
+    padding: 2rem;
+  }
+
+  .planet-info {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+  }
+
+  .planet-image img {
+    max-width: 240px;
+  }
+
+  .primary-heading {
+    font-size: 3.6rem;
+    padding-bottom: 4rem;
+  }
+}

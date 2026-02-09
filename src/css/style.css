@@ -26,10 +26,6 @@ body {
   justify-content: center;
 }
 
-.form {
-  flex: 0 0 40%;
-}
-
 .form-card {
   background-color: #083c8a;
   width: 300px;
